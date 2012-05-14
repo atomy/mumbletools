@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
@@ -19,82 +18,18 @@ import Murmur.ServerBootedException;
 import Murmur.ServerPrx;
 
 
-public class MumbleIce {
+public class MumbleIce implements Runnable{
     
-
+    boolean running = true;
+    int sleeptimer = 3600000;
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-        int status = 0;
-        Ice.Communicator ic = null;
-        try {
-        	// lets connect to the murmurs ice endpoint
-            ic = Ice.Util.initialize();
-            Ice.ObjectPrx base = ic.stringToProxy("Meta:tcp -h 127.0.0.1 -p 6502");
-            MetaPrx meta = MetaPrxHelper.checkedCast(base);
-   
-            // didnt work
-            if (meta == null)
-                throw new Error("Invalid proxy");
-
-            // get all running servers on the murmur instance
-            ServerPrx servs[] = meta.getBootedServers();
-            
-            // get config of our meta connection
-            Map<String, String> config = meta.getDefaultConf();
-            
-            
-            if(servs.length > 0) {
-              ServerPrx serv = servs[0];          
-            	
-            	// get all channels
-            	Map<Integer, Channel> channels = serv.getChannels(null);
-            	
-            	// loop through channels
-            	for(Map.Entry<Integer, Channel> chanEntry : channels.entrySet()) {            		
-            		Channel chan = chanEntry.getValue();
-            		
-            		// look for channel with name "..."
-            		if(chan.name.endsWith("--- trolololol ---")) {
-            			// get all sub channels and loop
-            			ArrayList<Integer> subChans = getSubChannelsOfID(serv, chan.id);       
-            			for(Integer i : subChans) {
-            				// get subchan and work with it
-            				Channel subChan = getChanByID(serv, i);
-            				if(subChan != null) {
-                                String playername = subChan.name.split("\\s+")[0];
-                                Player player = new Player(playername);
-                                parseOfficialStats(player);
-                                subChan.name = player.officialString();
-                                subChan.description = "last updated: " + getTimestamp();
-                                serv.setChannelState(subChan);
-                          }
-            			}
-            		}
-            	}
-            }
-        } catch (Ice.LocalException e) {
-            e.printStackTrace();
-            status = 1;
-        } catch (InvalidSecretException e) {
-            System.err.println("InvalidSecretException! check murmur ice config!");
-            status = 1;                 
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-            status = 1;
-        }
-        if (ic != null) {
-            // Clean up
-            try {
-                ic.destroy();
-            } catch (Exception e) {
-                System.err.println(e.getMessage());
-                status = 1;
-            }
-        }
-        System.exit(status);		
+	    Thread t = new Thread(new MumbleIce());
+	    t.setDaemon(true);
+	    t.run();
 	}
 
 	// return a list of all sub channel-ids of the given channel (specified by id)
@@ -205,4 +140,81 @@ public class MumbleIce {
 	    Date date = new Date(System.currentTimeMillis());
 	    return date.toLocaleString();
 	}
+
+    @Override
+    public void run() {
+        while (running) {
+            gatherAndParseInfoToMumble();
+            try {
+                Thread.sleep(sleeptimer);
+            } catch (InterruptedException e) {
+                System.err.println("Interrupted oO");
+            }
+        }
+    }
+
+    private void gatherAndParseInfoToMumble() throws Error {
+        Ice.Communicator ic = null;
+        try {
+            // lets connect to the murmurs ice endpoint
+            ic = Ice.Util.initialize();
+            Ice.ObjectPrx base = ic.stringToProxy("Meta:tcp -h 127.0.0.1 -p 6502");
+            MetaPrx meta = MetaPrxHelper.checkedCast(base);
+   
+            // didnt work
+            if (meta == null)
+                throw new Error("Invalid proxy");
+
+            // get all running servers on the murmur instance
+            ServerPrx servs[] = meta.getBootedServers();
+            
+            // get config of our meta connection
+            Map<String, String> config = meta.getDefaultConf();
+            
+            
+            if(servs.length > 0) {
+              ServerPrx serv = servs[0];          
+                
+                // get all channels
+                Map<Integer, Channel> channels = serv.getChannels(null);
+                
+                // loop through channels
+                for(Map.Entry<Integer, Channel> chanEntry : channels.entrySet()) {                  
+                    Channel chan = chanEntry.getValue();
+                    
+                    // look for channel with name "..."
+                    if(chan.name.endsWith("--- trolololol ---")) {
+                        // get all sub channels and loop
+                        ArrayList<Integer> subChans = getSubChannelsOfID(serv, chan.id);       
+                        for(Integer i : subChans) {
+                            // get subchan and work with it
+                            Channel subChan = getChanByID(serv, i);
+                            if(subChan != null) {
+                                String playername = subChan.name.split("\\s+")[0];
+                                Player player = new Player(playername);
+                                parseOfficialStats(player);
+                                subChan.name = player.officialString();
+                                subChan.description = "last updated: " + getTimestamp();
+                                serv.setChannelState(subChan);
+                          }
+                        }
+                    }
+                }
+            }
+        } catch (Ice.LocalException e) {
+            e.printStackTrace();
+        } catch (InvalidSecretException e) {
+            System.err.println("InvalidSecretException! check murmur ice config!");
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+        if (ic != null) {
+            // Clean up
+            try {
+                ic.destroy();
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
+        }
+    }
 }
