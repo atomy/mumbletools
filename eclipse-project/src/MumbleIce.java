@@ -4,16 +4,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import Murmur.Channel;
 import Murmur.InvalidSecretException;
-import Murmur.Meta;
 import Murmur.MetaPrx;
 import Murmur.MetaPrxHelper;
 import Murmur.ServerBootedException;
@@ -22,108 +21,7 @@ import Murmur.ServerPrx;
 
 public class MumbleIce {
     
-//    public static void main(String[] args) {
-//        
-//        
-//        
-//        int status = 0;
-//        Ice.Communicator ic = null;
-//        ServerPrx serv = null;
-//        ic = Ice.Util.initialize();
-//        Ice.ObjectPrx base = ic.stringToProxy("Meta:tcp -h 127.0.0.1 -p 6502");
-//        MetaPrx meta = MetaPrxHelper.checkedCast(base);
-//        
-//        if (meta == null) {
-//            throw new Error("Invalid proxy");
-//        }
-//        ServerPrx servs[] = null;
-//        
-//        try {
-//            servs = meta.getBootedServers();
-//            Map<String, String> config = meta.getDefaultConf();
-//        } catch (InvalidSecretException e) {
-//            System.err.println("InvalidSecretException! check murmur ice config!");
-//            status = 1;
-//        }
-//        
-//        if((servs != null) && servs.length > 0) {
-//            serv = servs[0];
-//            Map<Integer, Channel> channels = null;
-//            
-//            try {
-//                channels = serv.getChannels(null);
-//            } catch (InvalidSecretException e) {
-//                System.err.println("InvalidSecretException! check murmur ice config!");
-//                status = 1;
-//            } catch (ServerBootedException e) {
-//                System.err.println("Server not booted?");
-//                status = 1;
-//            }
-//            
-//            for(Map.Entry<Integer, Channel> chanEntry : channels.entrySet()) {                  
-//                Channel chan = chanEntry.getValue();
-//                System.out.println("main() chan name: " + chan.name + " chan id: " + chan.id);
-//              
-//                // look for channel with name "..."
-//                if(chan.name.endsWith("--- trolololol ---")) {
-//            
-//                    ArrayList<Integer> subChans = null;
-//                    try {
-//                        subChans = getSubChannelsOfID(serv, chan.id);
-//                    } catch (InvalidSecretException e) {
-//                        System.err.println("InvalidSecretException! check murmur ice config!");
-//                        status = 1;
-//                    } catch (ServerBootedException e) {
-//                        System.err.println("Server not booted?");
-//                        status = 1;
-//                    }     
-//                    
-//                    
-//                    for(Integer i : subChans) {
-//                        
-//                        Channel subChan = null;
-//                        
-//                        try {
-//                            subChan = getChanByID(serv, i);
-//                        } catch (InvalidSecretException e) {
-//                            System.err.println("InvalidSecretException! check murmur ice config!");
-//                            status = 1;
-//                        } catch (ServerBootedException e) {
-//                            System.err.println("Server not booted?");
-//                            status = 1;
-//                        }
-//                        
-//                        if(subChan != null) {
-//                            if(subChan.name.charAt(0) == 'a') {
-//                                subChan.name = "aDOLF";
-//                            }
-//                            String playername = subChan.name.split("\\s+")[0];
-//                            Player player = new Player(playername);
-//                            parseOfficialStats(player);
-//                            subChan.name = player.officialString();
-//                            subChan.description = player.officialString();
-//                            System.out.println(subChan.name);
-//                            serv.setChannelState(subChan);
-//                        }
-//                        
-//                    }
-//                }
-//            }
-//        }
-//        else {
-//            System.err.println("server not found");
-//        }
-//        if (ic != null) {
-//            // Clean up
-//            try {
-//                ic.destroy();
-//            } catch (Exception e) {
-//                System.err.println(e.getMessage());
-//                status = 1;
-//            }
-//        }
-//        System.exit(status);          
-//    }
+
 
 	/**
 	 * @param args
@@ -147,8 +45,6 @@ public class MumbleIce {
             // get config of our meta connection
             Map<String, String> config = meta.getDefaultConf();
             
-            // debug, printout found servers
-            System.out.println("main() found servers: " + servs.length);
             
             if(servs.length > 0) {
               ServerPrx serv = servs[0];          
@@ -159,7 +55,6 @@ public class MumbleIce {
             	// loop through channels
             	for(Map.Entry<Integer, Channel> chanEntry : channels.entrySet()) {            		
             		Channel chan = chanEntry.getValue();
-            		System.out.println("main() chan name: " + chan.name + " chan id: " + chan.id);
             		
             		// look for channel with name "..."
             		if(chan.name.endsWith("--- trolololol ---")) {
@@ -173,8 +68,7 @@ public class MumbleIce {
                                 Player player = new Player(playername);
                                 parseOfficialStats(player);
                                 subChan.name = player.officialString();
-                                subChan.description = player.officialString();
-                                System.out.println(subChan.name);
+                                subChan.description = "last updated: " + getTimestamp();
                                 serv.setChannelState(subChan);
                           }
             			}
@@ -306,4 +200,9 @@ public class MumbleIce {
             e.printStackTrace();
         }
     }
+	
+	private static String getTimestamp() {
+	    Date date = new Date(System.currentTimeMillis());
+	    return date.toLocaleString();
+	}
 }
