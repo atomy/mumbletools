@@ -22,6 +22,7 @@ public class MumbleIce implements Runnable{
     
     boolean running = true;
     int sleeptimer = 3600000;
+    String topchannel = "--- LoL Ranking (EUW) ---";
 
 	/**
 	 * @param args
@@ -183,7 +184,7 @@ public class MumbleIce implements Runnable{
                     Channel chan = chanEntry.getValue();
                     
                     // look for channel with name "..."
-                    if(chan.name.endsWith("--- trolololol ---")) {
+                    if(chan.name.endsWith(topchannel)) {
                         // get all sub channels and loop
                         ArrayList<Integer> subChans = getSubChannelsOfID(serv, chan.id);       
                         for(Integer i : subChans) {
