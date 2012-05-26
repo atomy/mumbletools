@@ -24,8 +24,8 @@ public class MumbleIce implements Runnable{
     boolean running = true;
     
     // milliseconds - 1 hour is 3600000
-    int sleeptimer = 3600000 / 2;
-    
+    int sleeptimer = 10000 / 2;
+     
     // lolstats yes no
     boolean lol = true;
     // name of lolstattopchannel
@@ -181,7 +181,7 @@ public class MumbleIce implements Runnable{
 	                line = line.replace("<div style=\"float: left;\"><span id=\"locationDisplaySpan\" class=\"small\">", "");
 	                line = line.replace("</span></div>", "");
 	                //line = line.trim().split("\\s+")[0];
-	                location.setLocationName(line.trim().split("\\s+")[0].replace(",", ""));
+	                location.setLocationName(line.trim().split(",")[0]);
 	            }
 	            if (line.contains("<p class=\"large\"><span class=\"temperature\" tempf=\"")) {
 	                line = line.replace("<p class=\"large\"><span class=\"temperature\" tempf=\"","");
