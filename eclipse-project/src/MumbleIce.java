@@ -24,7 +24,7 @@ public class MumbleIce implements Runnable{
     boolean running = true;
     
     // milliseconds - 1 hour is 3600000
-    int sleeptimer = 10000 / 2;
+    int sleeptimer = 3600000 / 2;
      
     // lolstats yes no
     boolean lol = true;
