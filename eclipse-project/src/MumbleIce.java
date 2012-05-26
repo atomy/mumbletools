@@ -24,7 +24,7 @@ public class MumbleIce implements Runnable{
     boolean running = true;
     
     // milliseconds - 1 hour is 3600000
-    int sleeptimer = 10000 / 2;
+    int sleeptimer = 3600000 / 2;
     
     // lolstats yes no
     boolean lol = true;
@@ -158,54 +158,65 @@ public class MumbleIce implements Runnable{
 	
 	
 	private static void getWeather(Location location) {
-	      try {
-	            // Create a URL for the desired page
-	            URL url = new URL("http://thefuckingweather.com/?where="+URLEncoder.encode(location.getPlz(), "UTF-8")+"&unit=c");
+	    try {
 
-	            // Read all the text returned by the server
-	            BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-	            String line;
-	            while ((line = in.readLine()) != null) {
-	                if (line.contains("<div style=\"float: left;\"><span id=\"locationDisplaySpan\" class=\"small\">")) {
-	                    line = line.replace("<div style=\"float: left;\"><span id=\"locationDisplaySpan\" class=\"small\">", "");
-	                    line = line.replace("</span></div>", "");
-	                    //line = line.trim().split("\\s+")[0];
-	                    location.setLocationName(line.trim().split("\\s+")[0].replace(",", ""));
-	                }
-	                if (line.contains("<p class=\"large\"><span class=\"temperature\" tempf=\"")) {
-	                    line = line.replace("<p class=\"large\"><span class=\"temperature\" tempf=\"","");
-	                    line = line.replace("</span>&#176;?!</p><div class=\"remarkContainer\">", "");
-	                    line = line.replaceFirst("\\d+", "");
-	                    line = line.replace("\">", "");
-	                    try {
-	                        location.setTemp(Integer.parseInt(line.trim()));
-	                        } catch (NumberFormatException e) {
-	                            e.printStackTrace();
-	                        }
-	                }
-	                if (line.contains("<p class=\"remark\">")) {
-	                    line = line.replace("<p class=\"remark\">","");
-	                    line = line.replace("</p>","");
-	                    line = line.trim();
-	                    location.setComment(line);
-	                }
-	                if (line.contains("</div><p class=\"flavor\">")) {
-                        line = line.replace("<</div><p class=\"flavor\">","");
-                        line = line.replace("</p>","");
-                        line = line.trim();
-                        location.setFlavour(line);
-                    }
+	        // Create a URL for the desired page
+	        URL url = new URL("http://www.google.de/ig/api?weather=" + URLEncoder.encode(location.getPlz() + " germany", "UTF-8"));
+	        BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), "Cp1252"));
+	        String ort = in.readLine().replace("<?xml version=\"1.0\"?><xml_api_reply version=\"1\"><weather module_id=\"0\" tab_id=\"0\" mobile_row=\"0\" mobile_zipped=\"1\" row=\"0\" section=\"0\" ><forecast_information><city data=\"", "");
+	        ort = ort.split(",")[0];
+
+	        //	          System.out.println(URLEncoder.encode(ort, "UTF-8"));
+	        //	          System.out.println("http://thefuckingweather.com/?where="+URLEncoder.encode(ort, "UTF-8")+"&unit=c");
+
+
+	        URL newurl = new URL("http://thefuckingweather.com/?where="+URLEncoder.encode(ort, "UTF-8")+"&unit=c");
+	        BufferedReader in2 = new BufferedReader(new InputStreamReader(newurl.openStream()));
+
+	        // Read all the text returned by the server
+	        //	            BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+	        String line;
+	        while ((line = in2.readLine()) != null) {
+	            if (line.contains("<div style=\"float: left;\"><span id=\"locationDisplaySpan\" class=\"small\">")) {
+	                line = line.replace("<div style=\"float: left;\"><span id=\"locationDisplaySpan\" class=\"small\">", "");
+	                line = line.replace("</span></div>", "");
+	                //line = line.trim().split("\\s+")[0];
+	                location.setLocationName(line.trim().split("\\s+")[0].replace(",", ""));
 	            }
-//	            System.out.println(location.getLocationName());
-//	            System.out.println(location.getTemp());
-//	            System.out.println(location.getComment());
-//	            System.out.println();
-//	            System.out.println(location.toString());
-	            in.close();
-	        } catch (MalformedURLException e) {
-	        } catch (IOException e) {
+	            if (line.contains("<p class=\"large\"><span class=\"temperature\" tempf=\"")) {
+	                line = line.replace("<p class=\"large\"><span class=\"temperature\" tempf=\"","");
+	                line = line.replace("</span>&#176;?!</p><div class=\"remarkContainer\">", "");
+	                line = line.replaceFirst("\\d+", "");
+	                line = line.replace("\">", "");
+	                try {
+	                    location.setTemp(Integer.parseInt(line.trim()));
+	                } catch (NumberFormatException e) {
+	                    e.printStackTrace();
+	                }
+	            }
+	            if (line.contains("<p class=\"remark\">")) {
+	                line = line.replace("<p class=\"remark\">","");
+	                line = line.replace("</p>","");
+	                line = line.trim();
+	                location.setComment(line);
+	            }
+	            if (line.contains("</div><p class=\"flavor\">")) {
+	                line = line.replace("<</div><p class=\"flavor\">","");
+	                line = line.replace("</p>","");
+	                line = line.trim();
+	                location.setFlavour(line);
+	            }
 	        }
+	        //	            System.out.println(location.getLocationName());
+	        //	            System.out.println(location.getTemp());
+	        //	            System.out.println(location.getComment());
+	        //	            System.out.println();
+	        //	            System.out.println(location.toString());
+	        in.close();
+	    } catch (MalformedURLException e) {
+	    } catch (IOException e) {
 	    }
+	}
 	
 	private static String getTimestamp() {
 	    Date date = new Date(System.currentTimeMillis());
@@ -274,7 +285,7 @@ public class MumbleIce implements Runnable{
                     }
                     if (weather) {
                         if (chan.name.endsWith(wetterTopchannel)) {
-                            ArrayList<Integer> subChans = getSubChannelsOfID(serv, chan.id);       
+                            ArrayList<Integer> subChans = getSubChannelsOfID(serv, chan.id);   
                             for(Integer i : subChans) {
                                 Channel subChan = getChanByID(serv, i);
                                 if(subChan != null) {
