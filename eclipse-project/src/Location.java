@@ -23,7 +23,7 @@ public class Location {
 	}
 
 	public void setLocationName(String locationName) {
-		this.locationName = locationName.replace("&#252;", "ü").replace("&#228;", "ä").replace("&#246;", "ö");
+		this.locationName = locationName.replace("&#252;", "\u00FC").replace("&#228;", "\u00E4").replace("&#246;", "\u00F6");
 	}
 	
 	public String getFlavour() {
@@ -52,7 +52,7 @@ public class Location {
 	
 	public String toString() {
 	    if (temp != -9000) { 
-	        return getPlz()+ " - " + getLocationName()+ ": " + getTemp() + "° - " + getComment();
+	        return getPlz()+ " - " + getLocationName()+ ": " + getTemp() + "\u00B0 - " + getComment();
 	    } else {
 	        return getPlz()+ " - sorry, the weather-control station broke.";
 	    }
