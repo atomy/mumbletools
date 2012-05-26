@@ -52,7 +52,7 @@ public class Location {
 	
 	public String toString() {
 	    if (temp != -9000) { 
-	        return getPlz()+ " - " + getLocationName()+ ": " + getTemp() + "\u00B0 - " + getComment();
+	        return getPlz()+ " - " + getLocationName()+ ": " + getTemp() + "\u2103 - " + getComment();
 	    } else {
 	        return getPlz()+ " - sorry, the weather-control station broke.";
 	    }
