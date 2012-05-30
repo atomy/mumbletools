@@ -26,6 +26,7 @@ public class ConnectionHandler implements Runnable {
         loops = 0;
         running = true;
         this.logger = logger;
+        
         logger.log(Level.FINE, "ConnectionHandler created");
     }
     

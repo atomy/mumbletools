@@ -25,12 +25,8 @@ public class WeatherHandler extends ChannelHandler{
     public void run() {
         if(chan != null) {
             String plz = chan.name.split("\\s+")[0];
-            Location location = null;
-            try {
-                location = new Location(plz);
-            } catch (Exception e) {
-                System.err.println("Integer parse Error");
-            }
+            logger.log(Level.FINEST, "Locationchannel detected: " + plz);
+            Location location = new Location(plz, logger);
             if (location != null) {
                 parse(location);
                 chan.name = location.toString();
@@ -53,34 +49,31 @@ public class WeatherHandler extends ChannelHandler{
 
     private static void parse(Location location) {
         try {
-
-            URL url = new URL("http://www.google.de/ig/api?weather=" + URLEncoder.encode(location.getPlz() + "+Germany", "UTF-8"));
+            URL url = new URL("http://www.google.de/ig/api?weather=" + location.getPlz() + "+Germany");
+            logger.log(Level.FINEST, "Google URL: " + url.toExternalForm());
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), "Cp1252"));
             String ort = in.readLine().replace("<?xml version=\"1.0\"?><xml_api_reply version=\"1\"><weather module_id=\"0\" tab_id=\"0\" mobile_row=\"0\" mobile_zipped=\"1\" row=\"0\" section=\"0\" ><forecast_information><city data=\"", "");
             ort = ort.split(",")[0];
+            logger.log(Level.FINER, location.getPlz()+ ": " + ort);
+            location.setLocationName(ort);
 
-
-
-            URL newurl = new URL("http://thefuckingweather.com/?where="+URLEncoder.encode(ort, "UTF-8")+"&unit=c");
+            URL newurl = new URL("http://thefuckingweather.com/?where="+ ort+"&unit=c");
+            logger.log(Level.FINER, "Fucking URL: " + newurl.toExternalForm());
             BufferedReader in2 = new BufferedReader(new InputStreamReader(newurl.openStream()));
-
+            logger.log(Level.FINER, "Fucking Stream opened: " + newurl.toExternalForm());
             String line;
             while ((line = in2.readLine()) != null) {
                 
-                System.out.println(line);
                 
-                if (line.contains("<div style=\"float: left;\"><span id=\"locationDisplaySpan\" class=\"small\">")) {
-                    line = line.replace("<div style=\"float: left;\"><span id=\"locationDisplaySpan\" class=\"small\">", "");
-                    line = line.replace("</span></div>", "");
-                    location.setLocationName(line.trim().split(",")[0]);
-                }
                 if (line.contains("<p class=\"large\"><span class=\"temperature\" tempf=\"")) {
+                    logger.log(Level.FINEST, location.getPlz() +  "'s templine: " + line);
                     line = line.replace("<p class=\"large\"><span class=\"temperature\" tempf=\"","");
                     line = line.replace("</span>&#176;?!</p><div class=\"remarkContainer\">", "");
                     line = line.replaceFirst("\\d+", "");
                     line = line.replace("\">", "");
                     try {
                         location.setTemp(Integer.parseInt(line.trim()));
+                        logger.log(Level.FINEST, location.getPlz() +  "'s Fucking Temp: " + location.getTemp());
                     } catch (NumberFormatException e) {
                         e.printStackTrace();
                     }

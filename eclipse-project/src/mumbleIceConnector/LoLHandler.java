@@ -25,9 +25,10 @@ public class LoLHandler extends ChannelHandler{
 
     @Override
     public void run() {
-        logger.log(Level.FINER, "Parsing started..");
         String playername = chan.name.split("\\s+")[0];
+        logger.log(Level.FINEST, "Playerchannel detected: " + playername);
         Player player = new Player(playername, logger);
+        logger.log(Level.FINE, "LOLparsing started for: " + player.getName());
         chan.name = grabStats(player, MumbleIceConnector.advancedLol);
         String desc = MumbleIceConnector.advancedLol ? "Summoner ID: "
                 + player.getId() + " Have a nice Day!" : "Sorry, no Information here today.";
@@ -59,9 +60,9 @@ public class LoLHandler extends ChannelHandler{
         boolean foundPlayername = false;
         boolean rightPlayer = false;
         Pattern p = Pattern.compile("\\d+");
-
         try {
             URL url = new URL("http://competitive.euw.leagueoflegends.com/ladders/euw/current/rankedsolo5x5?summoner_name=" + URLEncoder.encode(player.getName(), "UTF-8"));
+            logger.log(Level.FINEST, "URL for comp - stats: " + url.toExternalForm());
             InputStream is = url.openStream();
             InputStreamReader isr = new  InputStreamReader(is);
             BufferedReader in = new BufferedReader(isr);
@@ -187,9 +188,13 @@ public class LoLHandler extends ChannelHandler{
         parseOfficial(player);
         if (player.getOfficialRating() != 0 && advanced) {
             parseLoLKing(player);
-            int offgames = player.getOfficialWins() + player.getOfficialLosses();
-            int lolgames = player.getLolKingWins() + player.getLolKingLosses();
-            return offgames < lolgames ? player.lolKingString() : player.officialString();
+            if (player.getId() != null) {
+                int offgames = player.getOfficialWins() + player.getOfficialLosses();
+                int lolgames = player.getLolKingWins() + player.getLolKingLosses();
+                return offgames < lolgames ? player.lolKingString() : player.officialString();
+            } else {
+                return player.officialString();
+            }
         } else if (player.getOfficialRating() == 0 && advanced) {
             parseLoLKing(player);
             int lolgames = player.getLolKingWins() + player.getLolKingLosses();

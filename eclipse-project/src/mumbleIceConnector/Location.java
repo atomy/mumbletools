@@ -1,5 +1,7 @@
 package mumbleIceConnector;
 
+import java.util.logging.Logger;
+
 public class Location {
 	
 	private String plz;
@@ -11,7 +13,7 @@ public class Location {
 	
     
 
-    public Location(String postalcode) {
+    public Location(String postalcode, Logger logger) {
 		plz = postalcode;
 		temp = -9000;
 		comment = "";
