@@ -1,4 +1,4 @@
-package mumbleIceConnector;
+package org.dss.mumbleIceConnector;
 
 import java.util.ArrayList;
 import java.util.Map;

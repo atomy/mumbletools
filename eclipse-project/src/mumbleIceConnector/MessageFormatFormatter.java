@@ -1,4 +1,4 @@
-package mumbleIceConnector;
+package org.dss.mumbleIceConnector;
 
 import java.text.MessageFormat;
 import java.util.Date;
