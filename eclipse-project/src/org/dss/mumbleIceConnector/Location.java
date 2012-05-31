@@ -57,7 +57,7 @@ public class Location {
 	    if (temp != -9000) { 
 	        return getPlz()+ " - " + getLocationName()+ ": " + getTemp() + "\u00B0C - " + getComment();
 	    } else {
-	        return getPlz()+ " - sorry, the weather-control station broke";
+	        return getPlz()+ " - sorry, the weather-control station broke :(";
 	    }
 	}
 
