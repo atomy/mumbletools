@@ -15,6 +15,7 @@ startProgram() {
     NEWPID=$!
     echo "startProgram() started program ${NEWPID}"
     echo ${NEWPID} > ${PIDFILE}
+	exit 0
   else
     echo "startProgram() program failed to start :("
     exit 1
