@@ -13,7 +13,7 @@ startProgram() {
   nohup ${JAVAPATH} -jar ${TARGETFILE} >/dev/null 2>&1 &
   if [ $? -eq 0 ] ; then
     NEWPID=$!
-    echo "startProgram() started program ${NEWPID}"
+    echo "startProgram() started program '${NEWPID}'"
     echo ${NEWPID} > ${PIDFILE}
 	exit 0
   else
