@@ -17,13 +17,10 @@ public class ConnectionHandler implements Runnable {
     
     private boolean running;
     
-    private int loops;
-    
     private Logger logger;
     
 
     public ConnectionHandler(Logger logger) {
-        loops = 0;
         running = true;
         this.logger = logger;
         
@@ -45,9 +42,8 @@ public class ConnectionHandler implements Runnable {
         logger.log(Level.FINE, "trying to establish connection...");
         
         while (isRunning()) {
-            
+        	logger.log(Level.FINE, "main loop - calling gatherAndParseInfoToMumble()");
             gatherAndParseInfoToMumble();
-            loops++;
             
             synchronized(this) {
                 try {

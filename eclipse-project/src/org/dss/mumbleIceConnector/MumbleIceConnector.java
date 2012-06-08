@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 public class MumbleIceConnector {
     
     // milliseconds - 1 hour is 3600000
-    final static int sleeptimer = 678688678 / 2;
+    final static int sleeptimer = 1000 * 60 * 30; // 1000ms, 60s, 30m
      
     // lolstats yes no
     static final boolean lol = true;
