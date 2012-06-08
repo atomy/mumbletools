@@ -7,7 +7,7 @@ import java.util.logging.LogRecord;
 
 public class MessageFormatFormatter extends Formatter {
     
-    private static final MessageFormat messageFormat = new MessageFormat("{0}[{1}|{2}|{3,date,dd/MM/YYYY HH:mm:ss.SSS}]: {4}{5}");
+    private static final MessageFormat messageFormat = new MessageFormat("{0}[{1}|{2}|{3,date,dd/MM/yyyy HH:mm:ss.SSS}]: {4}{5}");
     
     public MessageFormatFormatter() {
         super();
