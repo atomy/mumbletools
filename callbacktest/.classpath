@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="lib" path="E:/workspace/mumbleTest/repo/org/dss/db/0.0/db-0.0.jar"/>
+	<classpathentry kind="lib" path="E:/workspace/mumbleTest/repo/org/dss/Freeze/0.0/Freeze-0.0.jar"/>
+	<classpathentry kind="lib" path="E:/workspace/mumbleTest/repo/org/dss/Ice/0.0/Ice-0.0.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
