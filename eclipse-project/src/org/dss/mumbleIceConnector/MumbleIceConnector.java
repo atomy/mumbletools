@@ -35,7 +35,6 @@ public class MumbleIceConnector {
         
         logger = ConnectorUtil.createLogger();
         
-        
         ConnectionHandler connectionHandler = new ConnectionHandler(logger);
         Thread t = new Thread(connectionHandler);
         t.start();
