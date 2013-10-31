@@ -18,6 +18,15 @@ public class Player {
     private String name;
     private Logger logger;
     
+    private String tier;
+    private int wins;
+    private int losses;
+    private String rank;
+    private String miniSeries;
+    private int leaguePoints;
+    private int demotionWarning;
+    private String quequeType;
+    
     public int getOfficialRating() {
         return officialRating;
     }
@@ -143,5 +152,94 @@ public class Player {
         } catch (UnsupportedEncodingException e) {
         } catch (IOException e) {
         }
+    }   
+    
+    public void setTier(String tier)
+    {
+    	this.tier = tier;
     }
+    
+    public void setWins(int wins)
+    {
+    	this.wins = wins;
+    }
+    
+    public void setLosses(int losses)
+    {
+    	this.losses = losses;
+    }    
+
+    public void setRank(String rank)
+    {
+    	this.rank = rank;
+    }      
+    
+    public void setMiniSeries(String miniSeries)
+    {
+    	this.miniSeries = miniSeries;
+    }
+
+    public void setLeaguePoints(int leaguePoints)
+    {
+    	this.leaguePoints = leaguePoints;
+    }
+    
+    public void setDemotionWarning(int demotionWarning)
+    {
+    	this.demotionWarning = demotionWarning;
+    }
+    
+    public void setQueueType(String queueType)
+    {
+    	this.quequeType = queueType;
+    }
+    
+    public int getLeaguePoints()
+    {
+    	return this.leaguePoints;
+    }
+
+	public Logger getLogger() {
+		return logger;
+	}
+
+	public void setLogger(Logger logger) {
+		this.logger = logger;
+	}
+
+	public String getQuequeType() {
+		return quequeType;
+	}
+
+	public void setQuequeType(String quequeType) {
+		this.quequeType = quequeType;
+	}
+
+	public String getTier() {
+		return tier;
+	}
+
+	public int getWins() {
+		return wins;
+	}
+
+	public int getLosses() {
+		return losses;
+	}
+
+	public String getRank() {
+		return rank;
+	}
+
+	public String getMiniSeries() {
+		return miniSeries;
+	}
+
+	public int getDemotionWarning() {
+		return demotionWarning;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}    
 }

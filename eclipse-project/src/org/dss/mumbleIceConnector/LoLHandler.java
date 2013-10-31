@@ -25,10 +25,14 @@ public class LoLHandler extends ChannelHandler {
 	@Override
 	public void run() {
 		String playername = chan.name.split("\\s+")[0];
-		logger.log(Level.FINEST, "Playerchannel detected: " + playername);
+		logger.log(Level.FINE, "Playerchannel detected: " + playername);
 		Player player = new Player(playername, logger);
 		logger.log(Level.FINE, "LOLparsing started for: " + player.getName());
-		chan.name = grabStats(player, MumbleIceConnector.advancedLol);
+
+		Meepo meepo = new Meepo(player);
+		chan.name = meepo.getChannelName();
+		chan.description = meepo.getChannelDescription();
+		
 		String desc = MumbleIceConnector.advancedLol ? "Summoner ID: " + player.getId() + " Have a nice Day!" : "Sorry, no Information here today.";
 		chan.description = desc;
 		try {

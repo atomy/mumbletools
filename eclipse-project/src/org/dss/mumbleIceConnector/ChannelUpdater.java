@@ -1,10 +1,14 @@
 package org.dss.mumbleIceConnector;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import Murmur.Channel;
+import Murmur.InvalidChannelException;
 import Murmur.InvalidSecretException;
 import Murmur.ServerBootedException;
 import Murmur.ServerPrx;
@@ -29,17 +33,38 @@ public class ChannelUpdater {
 
 				if (MumbleIceConnector.lol) {
 					if (chan.name.endsWith(MumbleIceConnector.lolTopchannel)) {
+						logger.log(Level.FINE, "Found LoL-Channel: " + chan.name);
 						ArrayList<Integer> subChans = getSubChannelsOfID(serv, chan.id);
 
-						for (Integer i : subChans) {
-							Thread t = new Thread(new LoLHandler(serv, i, logger));
-							t.start();
+						if (!MumbleIceConnector.checkApiLimit()) {
+							String err = String.format("API Limit reached!");
+							logger.log(Level.WARNING, err);
+							chan.description = err;
+							serv.setChannelState(chan);
+						} else if (subChans.size() > MumbleIceConnector.maxLolCannels) {
+							String err = String.format("Found too much LoL-Channels (%d)", subChans.size());
+							logger.log(Level.WARNING, err);
+							chan.description = err;
+							serv.setChannelState(chan);
+						} else {
+							for (Integer i : subChans) {
+								Thread t = new Thread(new LoLHandler(serv, i, logger));
+								t.start();
+							}
+
+							DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");							
+							Date date = new Date();
+							String up = String.format("Last update: %s", dateFormat.format(date));
+							
+							chan.description = up;
+							serv.setChannelState(chan);							
 						}
 					}
 				}
 
 				if (MumbleIceConnector.weather) {
-					if (chan.name.endsWith(MumbleIceConnector.weatherTopchannel)) {
+					if (chan.name.endsWith(MumbleIceConnector.weatherTopchannel) && false) { // TODO
+						logger.log(Level.INFO, "Found Weather-Channel: " + chan.name);
 						ArrayList<Integer> subChans = getSubChannelsOfID(serv, chan.id);
 
 						for (Integer i : subChans) {
@@ -55,9 +80,11 @@ public class ChannelUpdater {
 				// ///////////////////////////////////////
 			}
 		} catch (InvalidSecretException e) {
-			logger.log(Level.SEVERE, "InvalidSecretException! Check murmur ice config!");
+			logger.log(Level.SEVERE, "InvalidSecretException! Check murmur ice config!!!");
 		} catch (ServerBootedException e) {
 			logger.log(Level.SEVERE, "Server booted? Could not derive critical information!");			
+		} catch (InvalidChannelException e) {
+			logger.log(Level.SEVERE, "Tried to set non-existant channel!");
 		}
 	}
 

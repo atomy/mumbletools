@@ -21,7 +21,7 @@ public abstract class ChannelHandler implements Runnable{
         try {
             this.chan = getChanByID(serv, id);
         } catch (InvalidSecretException e) {
-            System.err.println("InvalidSecretException! check murmur ice config!");
+            System.err.println("InvalidSecretException! check murmur ice config!!");
         } catch (ServerBootedException e) {
             System.err.println("ServerBootedException! check server status!");
         }
