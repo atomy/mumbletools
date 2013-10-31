@@ -78,34 +78,34 @@ public class ConnectionHandler implements Runnable {
 			meta = MetaPrxHelper.checkedCast(base);
 			
 			// add adapter for callbacks
-			adapter = ic.createObjectAdapterWithEndpoints("Callback.Client", "tcp -h " + MumbleIceConnector.ip);
-			adapter.activate();			
+			//adapter = ic.createObjectAdapterWithEndpoints("Callback.Client", "tcp -h " + MumbleIceConnector.ip);
+			//adapter.activate();			
 
 			// did'nt work
 			if (meta == null) {
 				logger.log(Level.SEVERE, "could not create connection to the MetaProxy!");
 				return;
 			}
-			logger.log(Level.FINE, "Connection established!");
+			logger.log(Level.INFO, "Connection established!");
 			
 			// get all running servers on the murmur instance
-			ServerPrx servs[] = meta.getBootedServers();
+			ServerPrx servs[] = meta.getBootedServers();			
 			
 			// just grab the 1st server as long as we got any servers at all
 			if (servs.length > 0) {
 				selectedServerProxy = servs[0];
-				CallbackManager.installCallbacks(adapter, selectedServerProxy);				
+				//CallbackManager.installCallbacks(adapter, selectedServerProxy);				
 			}
 		} catch (Ice.DNSException e) {
 			logger.log(Level.SEVERE, "Unable to resolve DNS address, check target server address!");			
 		} catch (ConnectionRefusedException e) {
 			logger.log(Level.SEVERE, "Connection refused: Wrong port/ip information or server not running!");
 		} catch (InvalidSecretException e) {
-			logger.log(Level.SEVERE, "InvalidSecretException! Check murmur ice config!");			
-		} catch (InvalidCallbackException e) {
-			logger.log(Level.SEVERE, "InvalidCallbackException! Check code!");	
-		} catch (ServerBootedException e) {
-			logger.log(Level.SEVERE, "ServerBootedException! server unreachable!");	
+			logger.log(Level.SEVERE, "InvalidSecretException! Check murmur ice config!!!!");			
+		//} catch (InvalidCallbackException e) {
+//			logger.log(Level.SEVERE, "InvalidCallbackException! Check code!");	
+	//	} catch (ServerBootedException e) {
+		//	logger.log(Level.SEVERE, "ServerBootedException! server unreachable!");	
 		}
 	}
 

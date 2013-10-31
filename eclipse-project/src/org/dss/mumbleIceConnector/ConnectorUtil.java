@@ -22,7 +22,7 @@ public class ConnectorUtil {
         }
         
         logger.addHandler(fh);
-        logger.setLevel(Level.ALL);
+        logger.setLevel(Level.FINEST);
         logger.log(Level.FINE, "");
         logger.log(Level.FINE, "");
         logger.log(Level.FINE, "Connector starting up.....");
