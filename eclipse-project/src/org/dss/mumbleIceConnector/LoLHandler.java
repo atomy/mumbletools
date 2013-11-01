@@ -22,12 +22,11 @@ public class LoLHandler extends ChannelHandler {
 		super(serv, id, logger);
 	}
 
-	@Override
 	public void run() {
 		String playername = chan.name.split("\\s+")[0];
-		logger.log(Level.FINE, "Playerchannel detected: " + playername);
+		logger.log(Level.WARNING, "Playerchannel detected: " + playername);
 		Player player = new Player(playername, logger);
-		logger.log(Level.FINE, "LOLparsing started for: " + player.getName());
+		logger.log(Level.WARNING, "LOLparsing started for: " + player.getName());
 
 		Meepo meepo = new Meepo(player);
 		chan.name = meepo.getChannelName();

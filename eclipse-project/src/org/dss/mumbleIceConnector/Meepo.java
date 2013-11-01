@@ -131,10 +131,11 @@ public class Meepo {
 	 * @return
 	 */
 	protected JSONObject getJson()
-	{
-		try {
-			String url = MumbleIceConnector.meepoUrl + MumbleIceConnector.lolRegion + "/" + this.player.getName() + "/leagues";
-			
+	{		
+		Unirest.setTimeouts(30000, 60000);
+		String url = MumbleIceConnector.meepoUrl + MumbleIceConnector.lolRegion + "/" + this.player.getName() + "/leagues";
+		
+		try {			
 			HttpResponse<JsonNode> response = Unirest
 					.get(url)
 					.header("X-Mashape-Authorization", MumbleIceConnector.apiKey)
@@ -157,11 +158,11 @@ public class Meepo {
 			System.out.println("code: " + code);
 			System.out.println("success: " + o.getString("success"));
 		} catch (UnirestException e) {
-			e.printStackTrace();
+			MumbleIceConnector.logger.log(Level.WARNING, "TIMEOUT FOR REQUEST: " + url);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
-			//e.printStackTrace();			
+			e.printStackTrace();			
 		}
 		
 		return null;

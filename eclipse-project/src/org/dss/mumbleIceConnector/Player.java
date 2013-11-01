@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 public class Player {
     
     private String name;
-    private Logger logger;
+    public Logger logger;
     
     private String tier;
     private int wins;

@@ -8,9 +8,7 @@ import Murmur.InvalidSecretException;
 import Murmur.ServerBootedException;
 import Murmur.ServerPrx;
 
-public abstract class ChannelHandler implements Runnable{
-    
-    
+public abstract class ChannelHandler {
     ServerPrx serv = null;
     Channel chan = null;
     static Logger logger = null;
@@ -27,6 +25,8 @@ public abstract class ChannelHandler implements Runnable{
         }
     }
     
+    public void run() {
+    }
 //    protected static String getTimestamp() {
 //        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
 //        Date now = new Date();

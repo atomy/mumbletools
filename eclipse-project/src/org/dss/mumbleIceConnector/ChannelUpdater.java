@@ -48,8 +48,8 @@ public class ChannelUpdater {
 							serv.setChannelState(chan);
 						} else {
 							for (Integer i : subChans) {
-								Thread t = new Thread(new LoLHandler(serv, i, logger));
-								t.start();
+								ChannelHandler h = new LoLHandler(serv, i, logger);
+								h.run();
 							}
 
 							DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");							
@@ -68,8 +68,8 @@ public class ChannelUpdater {
 						ArrayList<Integer> subChans = getSubChannelsOfID(serv, chan.id);
 
 						for (Integer i : subChans) {
-							Thread t = new Thread(new WeatherHandler(serv, i, logger));
-							t.start();
+							ChannelHandler h = new WeatherHandler(serv, i, logger);
+							h.run();
 						}
 					}
 				}
