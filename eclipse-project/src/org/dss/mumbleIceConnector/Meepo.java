@@ -44,7 +44,7 @@ public class Meepo {
 		
 		if (this.player.getRank() == null || this.player.getRank().isEmpty()) {
 			return out;
-		}			
+		}
 		
 		if (this.player.getMiniSeries() != null && !this.player.getMiniSeries().isEmpty()) {
 			out = String.format("%s [%s|%s] !SERIES!: %s LP: %d W/L: %d/%d", this.player.getName(), this.player.getTier(), this.player.getRank(), 
@@ -63,7 +63,7 @@ public class Meepo {
 	 */
 	public String getChannelDescription() 
 	{
-		String out = "ERR";
+		String out = "no Data";
 		
 		if (this.player.getRank() == null || this.player.getRank().isEmpty()) {
 			return out;
@@ -119,6 +119,7 @@ public class Meepo {
 			player.setLeaguePoints(data.getInt("leaguePoints"));
 			player.setDemotionWarning(data.getInt("demotionWarning"));
 			player.setQueueType(data.getString("queueType"));
+			player.setId(data.getString("summonerId"));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
